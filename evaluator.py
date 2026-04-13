@@ -28,8 +28,21 @@ class StrengthEvaluator:
         if has_repetition(self.password):
             score -= 5
 
-        if check_dataset(self.password):
-            score -= 10
+        dataset_results = check_dataset(self.password)
+
+        penalty = 0
+        max_penalty = 20
+
+        if dataset_results:
+            for category, words in dataset_results.items():
+                if category == "passwords":
+                    penalty += 10 * len(words)
+                elif category == "names":
+                    penalty += 7 * len(words)
+                elif category == "dictionary":
+                    penalty += 5 * len(words)
+
+        score -= min(penalty, max_penalty)
 
         entropy = calculate_entropy(self.password)
 
