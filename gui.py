@@ -85,7 +85,7 @@ def run_app():
 
     root = ttk.Window(themename="cyborg")
     root.title("OOP Project")
-    root.geometry("600x750")
+    root.geometry("700x1100")
 
     main = ttk.Frame(root, padding=20)
     main.pack(fill=BOTH, expand=True)
