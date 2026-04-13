@@ -8,7 +8,6 @@ def load_keyboard_patterns():
     global keyboard_patterns
     file_path = os.path.join('data', 'keyboard_patterns.csv')
     keyboard_patterns = reader.read(file_path, column_name='pattern')
-    print(f"Loaded {len(keyboard_patterns)} keyboard patterns")
 
 def get_keyboard_patterns():
     global keyboard_patterns
