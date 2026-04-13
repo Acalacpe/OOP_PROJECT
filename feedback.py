@@ -1,20 +1,21 @@
 import os
+import re
 from patterns import get_sequence_pattern, get_repetition_char, get_keyboard_patterns
 from TextFileReaderWriter import TextFileReaderWriter
 
 
 def get_feedback(password, analyzer):
     feedback = []
-    category, match = check_dataset(password)
+    dataset_results = check_dataset(password)
 
-    if category == "passwords":
-        feedback.append(f"Don't use common passwords = {match}")
+    if "passwords" in dataset_results:
+        feedback.append(f"Don't use common passwords: {', '.join(dataset_results['passwords'])}")
 
-    elif category == "names":
-        feedback.append(f"Don't use names = {match}")
+    if "names" in dataset_results:
+        feedback.append(f"Avoid using names: {', '.join(dataset_results['names'])}")
 
-    elif category == "dictionary":
-        feedback.append(f"Don't use word = {match}")
+    if "dictionary" in dataset_results:
+        feedback.append(f"Avoid dictionary words: {', '.join(dataset_results['dictionary'])}")
 
     if len(password) < 8:
         feedback.append("Use at least 8 characters")
@@ -50,39 +51,58 @@ def get_feedback(password, analyzer):
     return feedback
 
 
+def split_words(password):
+    parts = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)', password)
+    return [p.lower() for p in parts if len(p) >= 4]
+
 def check_dataset(password):
     reader = TextFileReaderWriter()
     base_dir = os.path.dirname(__file__)
     password_lower = password.lower()
+    split_parts = split_words(password)
 
-    
+    def is_valid(word):
+        return len(word) >= 4 and word.isalpha()
+
+    def collect_matches(word_list):
+        matches = set()
+        for word in word_list:
+            word_clean = word.strip().lower()
+            if not is_valid(word_clean):
+                continue
+
+            if word_clean in password_lower:
+                matches.add(word_clean)
+
+            for part in split_parts:
+                if word_clean == part:
+                    matches.add(word_clean)
+
+        return matches
+
+    results = {
+        "passwords": set(),
+        "names": set(),
+        "dictionary": set()
+    }
+
+    results["passwords"] = collect_matches(
+        reader.read(os.path.join(base_dir, "data/passwords.txt"))
+    )
+
     name_files = [
         "data/female_names.txt",
         "data/male_names.txt",
         "data/surnames.txt"
     ]
 
-
-    word_list = reader.read(os.path.join(base_dir, "data/passwords.txt"))
-    for word in word_list:
-        word_clean = word.strip().lower()
-        if word_clean in password_lower:
-            return "passwords", word_clean
-
-
     for file in name_files:
-        word_list = reader.read(os.path.join(base_dir, file))
-        for word in word_list:
-            word_clean = word.strip().lower()
-            if word_clean in password_lower:
-                return "names", word_clean
+        results["names"].update(
+            collect_matches(reader.read(os.path.join(base_dir, file)))
+        )
 
-    
-    word_list = reader.read(os.path.join(base_dir, "data/english_wikipedia.txt"))
-    for word in word_list:
-        word_clean = word.strip().lower()
-        if word_clean in password_lower:
-            return "dictionary", word_clean
+    results["dictionary"] = collect_matches(
+        reader.read(os.path.join(base_dir, "data/english_wikipedia.txt"))
+    )
 
-
-    return None, None
+    return {k: sorted(v) for k, v in results.items() if v}
