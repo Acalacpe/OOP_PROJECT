@@ -1,3 +1,7 @@
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![GUI](https://img.shields.io/badge/GUI-Tkinter-orange)
+![Status](https://img.shields.io/badge/Project-Complete-green)
+
 # 🔐 Password Strength Analyzer
 
 A Python GUI tool that analyzes password strength, detects weak patterns, and suggests stronger passwords.
