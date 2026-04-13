@@ -8,6 +8,16 @@ A Python GUI tool that analyzes password strength, detects weak patterns, and su
 
 ---
 
+## 👥 Group Members
+
+This project was developed as a group collaboration:
+
+- 👨‍💻 Matt Acala
+- 👨‍💻 Gabriel Arididon
+- 👨‍💻 Thomas Astudillo 
+- 👨‍💻 Marc Bautista 
+- 👨‍💻 Jappeth Subalisid 
+
 ## 🚀 Features
 - Password strength meter (0–50)
 - Entropy calculation
