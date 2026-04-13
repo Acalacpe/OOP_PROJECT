@@ -53,8 +53,8 @@ def get_sequence_pattern(password):
 def has_repetition(password):
     password = password.lower()
 
-    for i in range(len(password) - 1):
-        if password[i] == password[i + 1]:
+    for i in range(len(password) - 2):
+        if password[i] == password[i + 1] == password[i + 2]:
             return True
 
     return False
@@ -63,8 +63,8 @@ def has_repetition(password):
 def get_repetition_char(password):
     password = password.lower()
 
-    for i in range(len(password) - 1):
-        if password[i] == password[i + 1]:
+    for i in range(len(password) - 2):
+        if password[i] == password[i + 1] == password[i + 2]:
             return password[i]
 
     return None
