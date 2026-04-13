@@ -1,0 +1,52 @@
+from analyzer import PasswordAnalyzer
+from patterns import has_sequence, has_repetition
+from entropy import calculate_entropy
+from feedback import check_dataset
+
+class StrengthEvaluator:
+    def __init__(self, password):
+        self.password = password
+        self.analyzer = PasswordAnalyzer(password)
+
+    def evaluate(self):
+        score = 0
+
+        score += min(self.analyzer.length() * 3, 30)
+
+        if self.analyzer.has_uppercase():
+            score += 7
+        if self.analyzer.has_lowercase():
+            score += 7
+        if self.analyzer.has_number():
+            score += 7
+        if self.analyzer.has_special():
+            score += 7
+
+        if has_sequence(self.password):
+            score -= 10
+
+        if has_repetition(self.password):
+            score -= 10
+
+        if check_dataset(self.password):
+            score -= 20
+
+        entropy = calculate_entropy(self.password)
+
+        if entropy > 60:
+            score += 5
+        elif entropy > 40:
+            score += 3
+
+        score = max(0, min(score, 50))
+
+        if score < 15:
+            strength = "Very Weak"
+        elif score < 25:
+            strength = "Weak"
+        elif score < 40:
+            strength = "Medium"
+        else:
+            strength = "Strong"
+
+        return strength, score, entropy
