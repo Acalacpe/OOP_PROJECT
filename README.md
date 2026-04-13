@@ -15,7 +15,7 @@ This project was developed as a group collaboration:
 - 👨‍💻 Matt Acala
 - 👨‍💻 Gabriel Arididon
 - 👨‍💻 Thomas Astudillo 
-- 👨‍💻 Marc Bautista 
+- 👨‍💻 Mark Bautista 
 - 👨‍💻 Jappeth Subalisid 
 
 ## 🚀 Features
