@@ -1,5 +1,5 @@
 import os
-from patterns import has_sequence, has_repetition
+from patterns import get_sequence_pattern, get_repetition_char, get_keyboard_patterns
 from TextFileReaderWriter import TextFileReaderWriter
 
 
@@ -31,11 +31,21 @@ def get_feedback(password, analyzer):
     if not analyzer.has_special():
         feedback.append("Use special characters")
 
-    if has_sequence(password):
-        feedback.append("Avoid sequences like 123 or abc")
+    sequence = get_sequence_pattern(password)
+    if sequence:
+        feedback.append(f"Avoid sequence = {sequence}")
+    else:
+        keyboard_patterns = get_keyboard_patterns()
+        password_lower = password.lower()
+        
+        for pattern in keyboard_patterns:
+            if pattern in password_lower:
+                feedback.append(f"Avoid sequence = {pattern}")
+                break
 
-    if has_repetition(password):
-        feedback.append("Avoid repeating characters")
+    repetition = get_repetition_char(password)
+    if repetition:
+        feedback.append(f"Avoid repeating character = '{repetition}'")
 
     return feedback
 

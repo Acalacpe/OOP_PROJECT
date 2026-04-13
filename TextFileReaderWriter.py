@@ -1,12 +1,22 @@
-class TextFileReaderWriter:
+from FileReaderWriter import FileReaderWriter
+
+class TextFileReaderWriter(FileReaderWriter):
     def read(self, filename):
         try:
-            with open(filename, 'r', encoding="utf-8") as file:
+            with open(filename, 'r') as file:
                 words = []
                 for line in file:
-                    clean = line.strip().split()[0]  # 👈 takes ONLY first word
-                    if clean:
-                        words.append(clean.lower())
+                    words.extend(line.split())
                 return words
+            
         except FileNotFoundError:
+            print(f"Warning: {filename} not found in the current directory")
             return []
+        except Exception as e:
+            print(f"Error reading {filename}: {e}")
+            return []
+            
+
+    def write(self, filepath, data):
+        with open(filepath, "w") as text_file:
+            text_file.write(data)
