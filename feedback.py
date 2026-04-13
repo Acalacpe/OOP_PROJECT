@@ -50,36 +50,54 @@ def get_feedback(password, analyzer):
     return feedback
 
 
+def split_words(password):
+    parts = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z]|$)', password)
+    return [p.lower() for p in parts if len(p) >= 4]
+
 def check_dataset(password):
     reader = TextFileReaderWriter()
     base_dir = os.path.dirname(__file__)
+    password_lower = password.lower()
+    split_parts = split_words(password)
 
-    datasets = {
-        "passwords": "data/passwords.txt",
-        "names": [
-            "data/female_names.txt",
-            "data/male_names.txt",
-            "data/surnames.txt"
-        ],
-        "dictionary": "data/english_wikipedia.txt"
-    }
+    def is_valid(word):
+        return len(word) >= 4 and word.isalpha()
 
-
-    
-    for file in datasets["names"]:
-        word_list = reader.read(os.path.join(base_dir, file))
+    def check_words(word_list, category):
         for word in word_list:
-            if password.lower() == word.lower():
-                return "names", word
-    
-    word_list = reader.read(os.path.join(base_dir, datasets["dictionary"]))
-    for word in word_list:
-        if password.lower() == word.lower():
-            return "dictionary", word
-        
-    word_list = reader.read(os.path.join(base_dir, datasets["passwords"]))
-    for word in word_list:
-        if password.lower() == word.lower():
-            return "passwords", word
+            word_clean = word.strip().lower()
+            if not is_valid(word_clean):
+                continue
+
+            if word_clean in password_lower:
+                return category, word_clean
+
+            for part in split_parts:
+                if word_clean == part:
+                    return category, word_clean
+
+        return None, None
+
+    word_list = reader.read(os.path.join(base_dir, "data/passwords.txt"))
+    result = check_words(word_list, "passwords")
+    if result[0]:
+        return result
+
+    name_files = [
+        "data/female_names.txt",
+        "data/male_names.txt",
+        "data/surnames.txt"
+    ]
+
+    for file in name_files:
+        word_list = reader.read(os.path.join(base_dir, file))
+        result = check_words(word_list, "names")
+        if result[0]:
+            return result
+
+    word_list = reader.read(os.path.join(base_dir, "data/english_wikipedia.txt"))
+    result = check_words(word_list, "dictionary")
+    if result[0]:
+        return result
 
     return None, None
