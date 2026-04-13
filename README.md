@@ -1,3 +1,4 @@
+
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![GUI](https://img.shields.io/badge/GUI-Tkinter-orange)
 ![Status](https://img.shields.io/badge/Project-Complete-green)
@@ -38,7 +39,7 @@ This project was developed as a group collaboration:
 ---
 
 ## 📸 Screenshot
-![App Screenshot](screenshot.png)
+![Password Analyzer Screenshot](https://github.com/user-attachments/assets/0bd32b06-649f-4781-9723-7bd4080ac0f8)
 
 ---
 
