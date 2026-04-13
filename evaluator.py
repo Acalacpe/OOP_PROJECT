@@ -23,20 +23,20 @@ class StrengthEvaluator:
             score += 7
 
         if has_sequence(self.password):
-            score -= 10
+            score -= 5
 
         if has_repetition(self.password):
-            score -= 10
+            score -= 5
 
         if check_dataset(self.password):
-            score -= 20
+            score -= 10
 
         entropy = calculate_entropy(self.password)
 
         if entropy > 60:
-            score += 5
+            score += 7
         elif entropy > 40:
-            score += 3
+            score += 5
 
         score = max(0, min(score, 50))
 
